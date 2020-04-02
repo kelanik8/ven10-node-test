@@ -10,22 +10,22 @@ router.get("/filter/:id", (req, res) => {
     .then(data => {
       let filteredData = data.find(filter => filter.id == req.params.id);
 
-      console.log(filteredData);
-
       if (!filteredData) {
         return res.status(500).json({ message: "Id is invalid", data: null });
       }
-
+      console.log(filteredData);
       let carOwners = carOwnersData.filter(
         data =>
           +data.car_model_year >= +filteredData.start_year &&
           +data.car_model_year <= +filteredData.end_year &&
-          data.gender.toLowerCase() == filteredData.gender.toLowerCase()
+          data.gender.toLowerCase() == filteredData.gender.toLowerCase() &&
+          filteredData.countries.includes(data.country) &&
+          filteredData.colors.includes(data.car_color)
       );
 
       res.status(200).json({
         message: "Car owners data retrieved successfully",
-        data: carOwners.slice(0, 50)
+        data: carOwners
       });
     });
 });
